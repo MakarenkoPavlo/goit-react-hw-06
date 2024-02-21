@@ -1,23 +1,27 @@
-import { useDispatch } from "react-redux";
-import { getFilter } from "../../redux/filterSlice";
+import { useId } from 'react';
+import { useDispatch, useSelector } from "react-redux";
+import { setFilter } from "../../redux/filterSlice";
 
 const SearchForm = () => {
+  const searchId = useId();
   const dispatch = useDispatch();
 
-  const handleFilterChange = (event) => {
-    dispatch(getFilter(event.target.value));
+  const handleFilterChange = (e) => {
+    dispatch(setFilter(e.target.value.trim()));
   };
-    
-    return (
-        <div>
-            <p>Find contacts</p>
-            <input
-                type="text"
-                onChange={handleFilterChange}
-            />
-            
-        </div>
-    );
+  const value = useSelector(state => state.filters);
+  return (
+    <div>
+      <label htmlFor={searchId}>Find contacts by name</label>
+      <input
+        type="text"
+        name="search"
+        id={searchId}
+        value={value}
+        onChange={handleFilterChange}
+      />
+    </div>
+  );
 };
 
 export default SearchForm;

@@ -1,6 +1,6 @@
 import { useId } from "react";
 import * as Yup from "yup";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import { nanoid } from "nanoid";
 import { addContact } from "../../redux/contactsSlice";
 import { useDispatch } from "react-redux";
@@ -17,59 +17,50 @@ const userSchema = Yup.object().shape({
     .matches(/^\+?[0-9\s-]+$/, "Invalid phone number"),
 });
 
+const initialValues = {
+  name: '',
+  number: '',
+};
+
 export default function ContactForm () {
   const nameId = useId();
   const numberId = useId();
-
   const dispatch = useDispatch();
-  const handleAddContact = (newContact) => {
+
+  const handleAddContact = (values, actions) => {
+    const newContact = {
+      id: nanoid(),
+      name: values.name,
+      number: values.number,
+    };
     dispatch(addContact(newContact));
+    actions.resetForm();
   };
 
   return (
     <div>
       <Formik
-        initialValues={{
-          name: "",
-          number: "",
-        }}
+        initialValues={initialValues}
         validationSchema={userSchema}
-        onSubmit={(values, actions) => {
-          const newContact = {
-            id: nanoid(),
-            name: values.name.replace(/\b\w/g, (l) => l.toUpperCase()),
-            number: values.number,
-          };
-
-          handleAddContact(newContact);
-          actions.resetForm();
-        }}
+        onSubmit={handleAddContact}
       >
         <Form autoComplete="off">
           <div>
             <label htmlFor={nameId}>Name</label>
             <Field
               type="text"
-              name="addUser"
+              name="name"
               id={nameId}
             />
-            <ErrorMessage
-              name="addUser"
-              component="span"
-            />
-          </div>
+           </div>
 
           <div>
             <label htmlFor={numberId}>Number</label>
             <Field
-              type="text"
+              type="number"
               name="number"
               id={numberId}
-            />
-            <ErrorMessage
-              name="addNumber"
-              component="div"
-            />
+            />            
           </div>
 
           <button type="submit">Add contact</button>
