@@ -1,6 +1,6 @@
 import { useId } from "react";
 import * as Yup from "yup";
-import { Formik, Form, Field } from "formik";
+import { Formik, Form, Field, ErrorMessage } from "formik";
 import { nanoid } from "nanoid";
 import { addContact } from "../../redux/contactsSlice";
 import { useDispatch } from "react-redux";
@@ -52,6 +52,10 @@ export default function ContactForm () {
               name="name"
               id={nameId}
             />
+             <ErrorMessage
+              name="name"
+              component="span"
+              />
            </div>
 
           <div>
@@ -60,7 +64,11 @@ export default function ContactForm () {
               type="number"
               name="number"
               id={numberId}
-            />            
+            />       
+            <ErrorMessage
+              name="number"
+              component="span"
+            />
           </div>
 
           <button type="submit">Add contact</button>
